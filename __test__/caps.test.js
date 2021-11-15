@@ -1,7 +1,10 @@
 "use strict";
 
 const supertest = require("supertest");
-const events = require("../modular/event.pool");
+
+const port = process.env.PORT || 8080;
+
+const caps = require("socket.io")(port);
 
 let payload = {
   store: "1-206-flowers",
@@ -13,27 +16,27 @@ let payload = {
 jest.useFakeTimers();
 
 describe("caps test", () => {
-  require("../modular/caps");
+ 
   it("pickup-detect", () => {
-    expect(events.emit("pickup-detect", payload)).toEqual(true);
+    expect(caps.emit("pickup-detect", payload)).toEqual(true);
   });
 
   it("in-transit-detect", () => {
-    expect(events.emit("in-transit-detect", payload)).toEqual(true);
+    expect(caps.emit("in-transit-detect", payload)).toEqual(true);
   });
 
   it("delivered-detect", () => {
-    expect(events.emit("delivered-detect", payload)).toEqual(true);
+    expect(caps.emit("delivered-detect", payload)).toEqual(true);
   });
 });
 
 describe("vendor test", () => {
   require("../modular/vendor/vendor");
   it("ready to pickup", () => {
-    expect(events.emit("pickup-detect", payload)).toEqual(true);
+    expect(caps.emit("pickup-detect", payload)).toEqual(true);
   });
   it("delivered", () => {
-    expect(events.emit("delivered", payload)).toEqual(true);
+    expect(caps.emit("delivered", payload)).toEqual(true);
   });
 });
 
@@ -41,14 +44,14 @@ describe("driver test", () => {
   require("../modular/driver/driver");
   it("driver-pickup", () => {
       
-    expect(events.emit("pickup", payload)).toEqual(true);
+    expect(caps.emit("pickup", payload)).toEqual(true);
   });
 
   it("in-transit", () => {
-    expect(events.emit("pickup-detect", payload)).toEqual(true);
+    expect(caps.emit("pickup-detect", payload)).toEqual(true);
   });
 
   it("delivered", () => {
-    expect(events.emit("delivered", payload)).toEqual(true);
+    expect(caps.emit("delivered", payload)).toEqual(true);
   });
 });

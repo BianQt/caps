@@ -1,20 +1,29 @@
 "use strict";
-const events = require("../event.pool");
 
-events.on("pickup", (order) => {
+const io = require('socket.io-client');
+ 
+let host = 'http://localhost:8080';
+
+const socket = io.connect(host);
+
+
+socket.on("pickup", (order) => {
   setTimeout(() => {
     console.log(`DRIVER: picked up ${order.orderId}`);
-    events.emit("in-transit", order);
+    socket.emit("in-transit-detect", order);
   }, 1000);
 });
 
-events.on("in-transit", (order) => {
-  console.log("EVENT", { event:'in-transit',time:new Date(), order });
+socket.on("in-transit", (order) => {
   setTimeout(() => {
-    events.emit("delivered-detect", order);
+    socket.emit("delivered-detect", order);
   }, 3000);
 });
 
-events.on("delivered", (order) => {
+socket.on("delivered", (order) => {
   console.log(`delivered up ${order.orderId}`);
+});
+
+socket.on('newOrder' , (payload)=>{
+  CapsNameSpace.emit('newOrder',payload)
 });
