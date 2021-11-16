@@ -1,8 +1,8 @@
 {
-  "name": "caps",
+  "name": "queue",
   "version": "1.0.0",
   "description": "",
-  "main": "caps.js",
+  "main": "queue.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

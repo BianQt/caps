@@ -6,6 +6,7 @@ let host = 'http://localhost:8080';
 
 const socket = io.connect(host);
 
+socket.emit('get_all');
 
 socket.on("pickup", (order) => {
   setTimeout(() => {
@@ -24,6 +25,12 @@ socket.on("delivered", (order) => {
   console.log(`delivered up ${order.orderId}`);
 });
 
-socket.on('newOrder' , (payload)=>{
-  CapsNameSpace.emit('newOrder',payload)
-});
+// socket.on('newOrder' , (payload)=>{
+//   CapsNameSpace.emit('newOrder',payload)
+// });
+
+socket.on('order' , (message)=>{
+  // console.log('New Message : ',message.messageBody);
+  console.log('hi');
+  socket.emit('received', message.id);
+})
