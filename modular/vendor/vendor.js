@@ -6,37 +6,52 @@ let host = "http://localhost:8080";
 
 const capsConnection = io.connect(host);
 
+capsConnection.emit('get_all',{type: 'vendor'});
+
+capsConnection.on("orderInTransit", (message) => {
+  console.log(
+    `New Message : Your order ${message.id} has been picked up and it's in the transit state`
+  );
+  capsConnection.emit("received", { id: message.id, store: message.payload });
+});
+
+capsConnection.on("orderDelivered", (message) => {
+  console.log(
+    `New Message : Your order ${message.id} has been delivered`
+  );
+  capsConnection.emit("received", { id: message.id, store: message.payload });
+});
+
+
 capsConnection.on("delivered", (order) => {
   setTimeout(() => {
-    console.log(`VENDOR: Thank you for delivring ${order.orderId}`);
-    console.log("EVENT", { event: "delivered", time: new Date(), order });
+    // console.log(`VENDOR: Thank you for delivring ${order.orderId}`);
+    // console.log("EVENT", { event: "delivered", time: new Date(), order });
   }, 500);
 });
 
 capsConnection.on("newOrder", (newOrder) => {
-  console.log("==============================");
   let customerOrder = {
-    store: "flower",
+    store: newOrder.store,
     orderID: faker.datatype.uuid(),
     customer: faker.name.findName(),
     address: faker.address.streetAddress(),
-    orderType: newOrder.type,
-    messageBody: `You have new order to deliver ${newOrder.type}`,
+    messageBody: `You have new order to deliver from ${newOrder.store}`,
   };
 
-  let messageBody = {
-    messageBody: `You have new order to deliver ${newOrder.type}`,
+  let message = {
+    store: newOrder.store,
+    messageBody: `You have new order to deliver ${newOrder.store}`,
   };
 
-  console.log(messageBody);
+  // console.log(message);
   capsConnection.emit("pickup-detect", customerOrder);
-  
+
   setTimeout(() => {
-    capsConnection.emit("newOrderMsg", messageBody);
+    capsConnection.emit("newOrderMsg", message);
   }, 500);
 
   capsConnection.on("added", () => {
     capsConnection.disconnect();
   });
 });
-

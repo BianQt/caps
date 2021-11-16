@@ -7,7 +7,7 @@ const socket = io.connect(host);
 
 setInterval(() => {
   let order = {
-    type: 'Acme-Widget'
+    store: 'Acme-Widget'
 };
   socket.emit("newOrder-detect", order);
 }, 5000);
