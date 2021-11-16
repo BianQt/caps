@@ -7,10 +7,7 @@ const socket = io.connect(host);
 
 setInterval(() => {
   let order = {
-    store: "1-206-flowers",
-    orderId: faker.random.uuid(),
-    customer: faker.name.findName(),
-    address: faker.address.streetAddress(),
-  };
-  socket.emit("pickup-detect", order);
+    store: 'Acme-Widget'
+};
+  socket.emit("newOrder-detect", order);
 }, 5000);
